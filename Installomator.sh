@@ -353,7 +353,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.10beta"
-VERSIONDATE="2026-11-06"
+VERSIONDATE="2026-11-06.2"
 
 # MARK: Functions
 
@@ -3302,6 +3302,22 @@ calibriteprofiler)
     appNewVersion="$(versionFromGit LUMESCA calibrite-profiler-releases)"
     expectedTeamID="5C392763F5"
     ;;
+call42)
+    # Core42 in-house app, published by corebrain's ops/release-app.sh (tailnet only).
+    # Off the tailnet, or while Call42 is open (it may be recording a meeting), this
+    # reports the installed version as latest so the run is a clean no-op.
+    name="Call42"
+    type="dmg"
+    blockingProcesses=( "meetily" )
+    c42Feed=$(curl -fsL --max-time 20 "https://corebrain.taildffa04.ts.net/releases/call42/latest.json")
+    appNewVersion=$(echo "$c42Feed" | grep -Eo '"version" *: *"[^"]+"' | cut -d'"' -f4)
+    downloadURL=$(echo "$c42Feed" | grep -Eo '"url" *: *"[^"]+"' | cut -d'"' -f4)
+    if [[ -z "$appNewVersion" || -z "$downloadURL" ]] || pgrep -xq meetily; then
+        appNewVersion=$(defaults read "/Applications/Call42.app/Contents/Info" CFBundleShortVersionString 2>/dev/null)
+        downloadURL="https://corebrain.taildffa04.ts.net/releases/call42/latest.json"
+    fi
+    expectedTeamID="BD67RSWGDA"
+    ;;
 cameracontroller)
     name="CameraController"
     type="zip"
@@ -4174,6 +4190,20 @@ containermanager)
     downloadURL=$(downloadURLFromGit "bartreardon" "ContainerManager-App")
     appNewVersion=$(versionFromGit "bartreardon" "ContainerManager-App")
     expectedTeamID="N8GJ2Y5Z9T"
+    ;;
+core42assistant)
+    # Core42 in-house app, published by corebrain's ops/release-app.sh (tailnet only).
+    # Off the tailnet this reports the installed version as latest (a clean no-op).
+    name="Core42 Assistant"
+    type="dmg"
+    c42Feed=$(curl -fsL --max-time 20 "https://corebrain.taildffa04.ts.net/releases/core42-assistant/latest.json")
+    appNewVersion=$(echo "$c42Feed" | grep -Eo '"version" *: *"[^"]+"' | cut -d'"' -f4)
+    downloadURL=$(echo "$c42Feed" | grep -Eo '"url" *: *"[^"]+"' | cut -d'"' -f4)
+    if [[ -z "$appNewVersion" || -z "$downloadURL" ]]; then
+        appNewVersion=$(defaults read "/Applications/Core42 Assistant.app/Contents/Info" CFBundleShortVersionString 2>/dev/null)
+        downloadURL="https://corebrain.taildffa04.ts.net/releases/core42-assistant/latest.json"
+    fi
+    expectedTeamID="BD67RSWGDA"
     ;;
 cormorant)
     # credit: Søren Theilgaard (@theilgaard)

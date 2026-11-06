@@ -177,6 +177,7 @@ cakebrew
 calcservice
 calibre
 calibriteprofiler
+call42
 cameracontroller
 camostudio
 camtasia
@@ -276,6 +277,7 @@ conductor
 connectfonts
 container
 containermanager
+core42assistant
 cormorant
 cortexcode
 coteditor
