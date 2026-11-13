@@ -275,6 +275,7 @@ codex
 colourcontrastanalyser
 conductor
 connectfonts
+consultantworkspace
 container
 containermanager
 core42assistant
